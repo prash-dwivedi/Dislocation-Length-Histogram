@@ -1,0 +1,70 @@
+# dislocation_length_histogram.py
+
+Developed by: Prashant Dwivedi
+"""
+This script is designed for use with OVITO (Open Visualization Tool) to extract and analyze 
+dislocation length data from a dislocation analysis file. The script computes a histogram 
+of dislocation lengths and displays it in OVITO's data inspector for further analysis.
+
+Why this script is important:
+--------------------------------
+Dislocation analysis (DXA) is a computationally intensive task that can consume significant 
+time and memory resources, especially for large datasets or simulations involving complex microstructures. 
+By using this script, users can avoid re-running the DXA process multiple times, saving 
+computational effort and enabling faster data analysis.
+
+Instead of repeating the full DXA computation to analyze dislocation length distributions, 
+this script works with precomputed dislocation data, allowing users to efficiently visualize 
+and inspect the results. The resulting histogram provides valuable insights into the distribution 
+of dislocation lengths within the crystal structure, which can be critical for understanding 
+material behavior and deformation mechanisms.
+
+Usage:
+--------------------------------
+1. Load the dislocation analysis CA file in OVITO.
+2. Attach this script to the pipeline in OVITO.
+3. The histogram of dislocation lengths will appear in OVITO's data inspector.
+
+Dependencies:
+--------------------------------
+This script requires the OVITO Python API and NumPy for computation.
+"""
+
+# Import required modules
+from ovito.data import *
+import numpy
+
+def modify(frame: int, data: DataCollection):
+    """
+    This function extracts the dislocation length data from the dislocation segments 
+    in the current frame, computes a histogram of the lengths, and adds a DataTable 
+    object to the data inspector for visualization in OVITO.
+
+    Parameters:
+    - frame (int): The current animation frame.
+    - data (DataCollection): The data pipeline collection containing dislocation segments.
+
+    Output:
+    - A histogram plot of dislocation lengths will be added to the OVITO data inspector.
+    """
+    # Extract the lengths of all dislocation segments
+    lengths = [segment.length for segment in data.dislocations.segments]
+
+    # Compute the histogram of dislocation lengths using NumPy
+    hist, bin_edges = numpy.histogram(lengths, bins='auto')
+
+    # Create a DataTable object to store the histogram data
+    table = DataTable(title='Dislocation length distribution', plot_mode=DataTable.PlotMode.Histogram)
+    table.identifier = 'disloc_length_histogram'
+
+    # Store histogram counts in the DataTable
+    table.y = table.create_property('Counts', data=hist)
+
+    # Set the range of the histogram (x-axis interval)
+    table.interval = (bin_edges[0], bin_edges[-1])
+
+    # Label the x-axis for the histogram
+    table.axis_label_x = 'Length'
+
+    # Append the histogram DataTable to the OVITO data collection
+    data.objects.append(table)
