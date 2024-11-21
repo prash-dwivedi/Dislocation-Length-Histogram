@@ -13,6 +13,13 @@ Performing Dislocation Analysis (DXA) is often computationally expensive and can
 - Computes a histogram of dislocation lengths from existing DXA data.
 - Automatically visualizes the histogram in OVITO's data inspector.
 - Helps in studying material deformation mechanisms by providing insights into dislocation behavior.
+- 
+## Citation
+
+If you use this script in your research, please cite the following articles:
+
+- [DOI: 10.1016/j.jnucmat.2024.155289](https://doi.org/10.1016/j.jnucmat.2024.155289)
+- [DOI: 10.1016/j.jnucmat.2024.155042](https://doi.org/10.1016/j.jnucmat.2024.155042)
 
 ## Usage
 1. Open OVITO and load the dislocation analysis file.
